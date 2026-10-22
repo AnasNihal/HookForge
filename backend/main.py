@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.store import MemoryStore
 from app.seed import overview_metrics, seed_store
 from app.routes.projects import router_for as projects_router_for
+from app.routes.endpoints import router_for as endpoints_router_for
 
 app = FastAPI(title="HookForge API", version="0.1.0", description="Webhook observability API for the HookForge dashboard.")
 app.add_middleware(
@@ -16,6 +17,7 @@ app.add_middleware(
 store = MemoryStore()
 seed_store(store)
 app.include_router(projects_router_for(store))
+app.include_router(endpoints_router_for(store))
 
 @app.get("/")
 def home():
