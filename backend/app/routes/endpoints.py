@@ -8,12 +8,14 @@ def router_for(store: MemoryStore) -> APIRouter:
     router = APIRouter(prefix="/api/endpoints", tags=["endpoints"])
 
     @router.get("", response_model=list[Endpoint])
-    def list_endpoints(project_id: str | None = None, endpoint_status: EndpointStatus | None = Query(default=None, alias="status"), search: str | None = None) -> list[Endpoint]:
+    def list_endpoints(project_id: str | None = None, endpoint_status: EndpointStatus | None = Query(default=None, alias="status"), category: str | None = None, search: str | None = None) -> list[Endpoint]:
         endpoints = list(store.endpoints.values())
         if project_id:
             endpoints = [endpoint for endpoint in endpoints if endpoint.project_id == project_id]
         if endpoint_status:
             endpoints = [endpoint for endpoint in endpoints if endpoint.status == endpoint_status]
+        if category:
+            endpoints = [endpoint for endpoint in endpoints if endpoint.category.lower() == category.lower()]
         if search:
             needle = search.lower()
             endpoints = [endpoint for endpoint in endpoints if needle in f"{endpoint.name} {endpoint.path} {endpoint.category}".lower()]
