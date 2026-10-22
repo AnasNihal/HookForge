@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.store import MemoryStore
+from app.seed import overview_metrics, seed_store
 
 app = FastAPI(title="HookForge API", version="0.1.0", description="Webhook observability API for the HookForge dashboard.")
 app.add_middleware(
@@ -12,6 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 store = MemoryStore()
+seed_store(store)
 
 @app.get("/")
 def home():
@@ -21,6 +23,11 @@ def home():
 @app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "hookforge-api"}
+
+
+@app.get("/api/metrics/overview")
+def metrics_overview() -> dict[str, object]:
+    return overview_metrics(store)
 
 
 
