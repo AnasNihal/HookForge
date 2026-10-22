@@ -1,2 +1,2 @@
 import DashboardClient from "../dashboard-client";
-export default function SettingsPage() { return <DashboardClient section="overview" />; }
+export default function SettingsPage() { return <DashboardClient section="settings" />; }
