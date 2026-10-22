@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { ChatMessage, Endpoint, EventStatus, HookEvent } from "./types";
 
 type Section = "overview" | "projects" | "endpoints" | "events" | "ai" | "detail";
-type EventStatus = "Delivered" | "Failed" | "Retrying" | "Pending";
 type IconName = "grid" | "folder" | "link" | "bolt" | "spark" | "settings" | "search" | "bell" | "arrow" | "activity" | "clock" | "check" | "warning" | "code" | "plus" | "copy" | "refresh";
-
-type HookEvent = { id: string; type: string; endpoint: string; status: EventStatus; created: string; response: string; method: string; payload: string };
-type Endpoint = { name: string; path: string; method: "GET" | "POST" | "PATCH"; status: "Active" | "Paused"; category: string; events: string; latency: string; rate: string };
 
 const events: HookEvent[] = [
   { id: "evt_01J8K3P4A9F2", type: "payment.succeeded", endpoint: "Stripe Payments", status: "Delivered", created: "2 min ago", response: "200 OK", method: "POST", payload: '{\n  "id": "evt_01J8K3P4A9F2",\n  "type": "payment.succeeded",\n  "created": 1729000221,\n  "data": {\n    "object": {\n      "amount": 2499,\n      "currency": "usd",\n      "customer": "cus_8f12d"\n    }\n  }\n}' },
@@ -47,7 +44,7 @@ export default function DashboardClient({ section = "overview", eventId }: { sec
   const [modal, setModal] = useState<"endpoint" | "replay" | null>(null);
   const [toast, setToast] = useState("");
   const [chatInput, setChatInput] = useState("");
-  const [messages, setMessages] = useState([{ role: "assistant", text: "I found one failed delivery in your workspace. Ask me about the event, the endpoint, or the best next action and I’ll connect the dots." }]);
+  const [messages, setMessages] = useState<ChatMessage[]>([{ role: "assistant", text: "I found one failed delivery in your workspace. Ask me about the event, the endpoint, or the best next action and I’ll connect the dots." }]);
 
   const selectedEvent = events.find((event) => event.id === eventId) ?? events[2];
   const currentTitle = section === "detail" ? "Event detail" : section === "ai" ? "AI investigation" : section === "overview" ? "Overview" : section[0].toUpperCase() + section.slice(1);
