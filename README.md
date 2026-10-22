@@ -114,6 +114,27 @@ FastAPI provides interactive API documentation:
 * Swagger UI: http://127.0.0.1:8000/docs
 * ReDoc: http://127.0.0.1:8000/redoc
 
+### Backend API surface
+
+The Phase 2 backend currently uses an in-memory repository so the frontend can be connected without a database migration. Restarting the API resets the demo data.
+
+| Area | Routes |
+| --- | --- |
+| Health and metrics | `GET /api/health`, `GET /api/metrics/overview` |
+| Projects | `GET/POST /api/projects`, `GET /api/projects/{project_id}` |
+| Endpoints | `GET/POST /api/endpoints`, `GET/PATCH /api/endpoints/{endpoint_id}` |
+| Events | `GET /api/events`, `GET /api/events/{event_id}` |
+| Delivery | `GET /api/events/{event_id}/attempts`, `POST /api/events/{event_id}/replay` |
+| Investigation | `POST /api/ai/investigate` |
+| Auth | `POST /api/auth/login`, `POST /api/auth/register` |
+| Workspace | `GET/PATCH /api/workspace/settings` |
+
+Example event query:
+
+```bash
+curl "http://127.0.0.1:8000/api/events?status=Failed&page=1&page_size=10"
+```
+
 ---
 
 ## 💻 Frontend Setup
@@ -214,6 +235,12 @@ You can also open the Swagger documentation:
 
 ```text
 http://127.0.0.1:8000/docs
+```
+
+Run the backend workflow tests from the project root:
+
+```bash
+python3 -m unittest discover -s backend/tests -v
 ```
 
 ## 🔐 Environment Variables
